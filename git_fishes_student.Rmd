@@ -96,7 +96,7 @@ Write your answer in the code chunk below:
 
 ```{r, loaddata, eval = FALSE, echo=TRUE}
 
-path <- "replace this text with your relative path to a file in the 'data/' folder"
+path <- "./data/OA_activitydat_20190302_BIOL3207.csv"
   
 data <- read_csv(path)
 
@@ -108,7 +108,7 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 
 ```{r, write, eval = FALSE, echo=TRUE}
 
-path <- "replace this text with your relative path"
+path <- "./output/data.csv"
 
 write_csv(data, file = path)
 
@@ -123,18 +123,20 @@ First, write some code below to remove missing data
 
 ```{r, rmMiss}
 # Code to removing missing data from the `OA_activitydat_20190302_BIOL3207.csv` data frame. 
-
+data_narm <- data %>% filter(complete.cases(data))
 ```
 
 Second, drop out irrelevant columns and check that there are no spelling issues in `species` and `treatment`. Create a table of summary data that includes: 1) the mean, 2) the standard error and 3) the sample sizes of unique fish across ALL six fish species for each treatment. This will also help you detect any spelling errors. You can use the R package [`flextable`](https://ardata-fr.github.io/flextable-book/) to print out the results in a nice neat format! If you haven't heard about `flextable` spend 10 or so minutes having a look at it's functionality. It's incredible! You'll use this for tables throughout.
 
 ```{r summaryTab}
 # Drop irrelevant columns
-
+data_useful <- data_narm[, c(-1, -2, -9)]
 # Check spelling in species and treatment but also generate a summary table
-
+table_sp_tr <- as.matrix(table(data_useful$treatment, data_useful$species))
+table_sp_tr[, 7] <- c(mean(table_sp_tr[1, 1:6]), mean(table_sp_tr[2, 1:6]))
 # Use flextable to render the summary table in a tidy format
 
+flextable(data_useful)
 ```
 
 **STOP**: Before moving on, it's a good time to establish some good *GitHub* practices. You have just done an important step. It's time to save this file, stage it and commit it so that you have a record. Push these changes up using *GitHub Desktop*. It's important to do this frequently. It's probably not needed after every line of code, but it's good to do this when you have completed an important coding step. Of course, there's no harm in doing it more often. It will provide fine-scale tracking for you!
