@@ -52,11 +52,13 @@ This task involves cloning your repository on your computer. Where should we pla
 >**Question 1**: Why should you not rely on *GitHub* as a backup?
 
 ```{r, answer1, echo=TRUE, eval = FALSE}
-
-## Write your answer here. 
-1. Github provides more record of the detailed history, which you may not want to attention sometimes.
-2. Files in Github can be edided by many people, so it is hard to find the lastest file created by you quickly if you have many colleagues.
-3. Github relys on internet. You cannot use it when you are offline. You also need to download the files every time you want to edid your file if you use it as a backup.
+# Write your answer here
+1. Backup software provides automatic backup function, while Github requires manual upload.
+2. Backup software is private, while Github is public (at least among colleagues) — If a chunk is not fully complete, you probably do not want to share it online.
+3. Github will not be able to track files of commercial softwares like Word and Excel.
+4. Github is easyly to have a conflict if you have mane colleagues working at the same time.
+5. Github provides more record of the detailed history, which you may not want to pay attention to sometimes.
+6. Files in Github can be edided by many people, so it is hard to find the lastest file edited by you quickly if you have many colleagues.
 ```
 
 I'd usually suggest placing your repo in a cloud storage system like, *OneDrive*, *Dropbox*, or *GoogleDrive*. These will ensure that all your files are backed up and *GitHub* will provide a record of the detailed history. 
@@ -67,7 +69,7 @@ Before moving on you might have noticed that the code block above has a name `an
 
 ```{r answer2, echo=TRUE, eval = FALSE}
 # Write your answer here
-
+The effect of option "echo" is to argue whether to display code along with its results. So, if we change to echo = F, the chuck will not show in markdown file (because there is also a "eval = F", which means do not run it).
 ```
 
 **Important**: Notice that `eval = FALSE` for many code chunks. When you complete the tasks. Make sure to change these to `TRUE` otherwise you will find your code does not run!
@@ -133,7 +135,7 @@ Second, drop out irrelevant columns and check that there are no spelling issues 
 data_useful <- data_narm[, c(-1, -2, -9)]
 # Check spelling in species and treatment but also generate a summary table
 table_sp_tr <- as.matrix(table(data_useful$treatment, data_useful$species))
-table_sp_tr[, 7] <- c(mean(table_sp_tr[1, 1:6]), mean(table_sp_tr[2, 1:6]))
+
 # Use flextable to render the summary table in a tidy format
 
 flextable(data_useful)
