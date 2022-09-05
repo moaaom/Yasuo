@@ -36,6 +36,7 @@ The ".Rhistory" file includes history of  R of the process.
 1. Put data into the "data" file. The detailed meta-data for each column are as follows:
 
 Column Name | Description
+- | -
 loc | Location, and year, where the data were collected. AIMS = Australian Institute of Marine Science; LIRS = Lizard Island Research Station
 species | Species name: acantho = Acanthochromis; Ambon = Pomacentrus amboinensis; Chromis = Chromis atripectoralis; Humbug = Dascyllus aruanus; Lemon = Pomacentrus moluccensis
 treatment | Elevated CO2 [CO2] (850-1,050 µatm) or control [Control] (400 - 450 µatm) groups
@@ -55,7 +56,8 @@ If you use other data, please DO NOT change the file name "OA_activitydat_201903
 ## READ RESULTS
 
 1. The file in direction "./output/data" is a processed data removed missing value and irrelevant columns from original data. The detailed meta-data for each column are as follows:
-| Column Name | Description
+Column Name | Description
+- | -
 species | Species name: acantho = Acanthochromis; Ambon = Pomacentrus amboinensis; Chromis = Chromis atripectoralis; Humbug = Dascyllus aruanus; Lemon = Pomacentrus moluccensis
 treatment | Elevated CO2 [CO2] (850-1,050 µatm) or control [Control] (400 - 450 µatm) groups
 sample_size | The sample size of each kind of fish
