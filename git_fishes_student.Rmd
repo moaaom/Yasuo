@@ -95,7 +95,7 @@ Make sure you have added a `data/` folder to your working directory that you jus
 
 Write your answer in the code chunk below:
 
-```{r, loaddata, eval = FALSE}
+```{r, loaddata}
 # Give the path of row data
 path <- "./data/OA_activitydat_20190302_BIOL3207.csv"
 # Read the data 
@@ -107,7 +107,7 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 
 >**Question 4**: Using the `write_csv` function how would you write the path name to save this file to `output/data`?
 
-```{r, write, eval = FALSE}
+```{r, write}
 # Give the path of edited data
 path <- "./output/data/data_raw.csv"
 # Write the data
@@ -153,7 +153,7 @@ flextable(data_summary) %>% add_header_lines(., values = "Table 1: Summary of da
 
 ```{r answer5, echo=TRUE, eval=FALSE}
 ## Write your answer here....remember to use '#" in front of your text.
-#The left side shows all changes in my repo this time, which are waiting me to push them. The right side shows the content of my Rmarkdown file, in which the left line number shows the changed codes in the previous version and highlighted in red; the right line number shows the new codes this time and highlighted in green.
+#The left side shows all changes in my repo compared to last time. The right side shows the content of my Rmarkdown file, in which the left line number shows the changed codes in the previous version and highlighted in red; the right line number shows the new codes this time and highlighted in green.
 ```
 
 # **Task 5**
@@ -178,7 +178,7 @@ Note the code chunk used to make the figure. It has a `fig.cap` argument. That m
 
 Now that you have the figure you may also want to write / save it as a separate file. Use `ggsave` function to save the figure(s) to your new `output/figures/`:
 
-```{r, savefig}
+```{r, savefig, fig.cap="mean activity for each treatment for each species with pictures"}
 # Load the pictures
 pacantho <- readPNG('./pics/acantho.png')
 pambon <- readPNG('./pics/ambon.png')
@@ -259,8 +259,9 @@ This task involves teaming up with a collaborator. Exchange *GitHub* username de
 
 Now, lets create a new figure in the code block below that simplifies the one produced in **Task 5**. Instead of all species, lets just plot three of the species (chromis, lemon, and acantho). In the figure code chunk make sure you add the necessary arguments (e.g., `fig.cap`) so that you can refer to Figure \@ref(fig:collabFig).
 
-```{r, collabFig, echo=TRUE, eval=TRUE}
+```{r, collabFig, echo=TRUE, fig.cap="mean activity for each treatment for three species"}
 # You want to make changes to your collaborators figure in Task 5. Maybe you want to create a figure that focuses only on three fish species instead of the 5. More specifically, chromis, lemon, and acantho. Add code here to revise their figure to do that.
+
 ```
 
 
