@@ -45,6 +45,7 @@ The ".Rhistory" file includes history of  R of the process.
 | size | Size grouping of the fish, separated at 15 mm standard length into ‘big’ or ‘small’|
 | activity | Number of seconds the fish was active per minute, averaged across the duration of the trial|
 | comment | Comment with notes on the origin of the data|
+
 If you use other data, please DO NOT change the file name "OA_activitydat_20190302_BIOL3207.csv".
 
 2. Put figures of the six fish species (names shown in each figure name) into the "pics" file. If you use other data, please DO NOT change the file names of the figures.
@@ -56,6 +57,7 @@ If you use other data, please DO NOT change the file name "OA_activitydat_201903
 ## READ RESULTS
 
 1. The file in direction "./output/data" is a processed data removed missing value and irrelevant columns from original data. The detailed meta-data for each column are as follows:
+
 | Column Name | Description |
 | - | - |
 | species | Species name: acantho = Acanthochromis; Ambon = Pomacentrus amboinensis; Chromis = Chromis atripectoralis; Humbug = Dascyllus aruanus; Lemon = Pomacentrus moluccensis| 
