@@ -24,13 +24,12 @@ Use this Rmarkdown file as your template to complete the tasks outlined within t
 
 Throughout we are also going to learn a bit more about how to format Rmarkdown documents. So, pay close attention to the formatting. We're also going to make use of the `bookdown` package now to render your Rmarkdown because, well, it's quite elegant in many ways. Before you start the tasks install the following packages:
 
-```{r loadpacks, message=FALSE, results='hide', eval = F}
+```{r loadpacks, message=FALSE, results='hide', eval = T}
 # Install a load of packages that we'll use. I'll show you a shortcut that I love to use. Try using the p_load function in the "pacman" package. p_load will execute both the install.packages and library commands in one shot so they only need to be used once to install pacman itself.
-install.packages("pacman", repos = "http://cran.us.r-project.org")
 library(pacman)
 
 # Install bookdown for rendering because we'll need this. While we're at it, lets also install /load the tidyverse
-p_load(bookdown, tidyverse, ggforce, flextable, latex2exp, png, magick) # basically just list all the packages you want here
+p_load(bookdown, tidyverse, ggforce, flextable, latex2exp, png, magick, patchwork) # basically just list all the packages you want here
 
 ```
 
@@ -100,7 +99,7 @@ Write your answer in the code chunk below:
 # Give the path of row data
 path <- "./data/OA_activitydat_20190302_BIOL3207.csv"
 # Read the data 
-data <- read_csv(path)
+data_raw <- read_csv(path)
 
 ```
 
@@ -110,9 +109,9 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 
 ```{r, write, eval = FALSE}
 # Give the path of edited data
-path <- "./output/data.csv"
+path <- "./output/data/data_raw.csv"
 # Write the data
-write_csv(data, file = path)
+write_csv(data_raw, file = path)
 
 ```
 
@@ -125,7 +124,7 @@ First, write some code below to remove missing data
 
 ```{r, rmMiss}
 # Code to removing missing data from the `OA_activitydat_20190302_BIOL3207.csv` data frame. 
-data_narm <- data %>% filter(complete.cases(data))
+data_narm <- data_raw %>% filter(complete.cases(.))
 # Have a quick look
 head(data_narm, 10)
 ```
@@ -154,6 +153,7 @@ flextable(data_summary) %>% add_header_lines(., values = "Table 1: Summary of da
 
 ```{r answer5, echo=TRUE, eval=FALSE}
 ## Write your answer here....remember to use '#" in front of your text.
+#The left side shows all changes in my repo this time, which are waiting me to push them. The right side shows the content of my Rmarkdown file, in which the left line number shows the changed codes in the previous version and highlighted in red; the right line number shows the new codes this time and highlighted in green.
 ```
 
 # **Task 5**
@@ -162,10 +162,14 @@ Ignoring figures can be important because they take up quite a lot of space in y
 
 `.gitignore` files are used to control what *Git* tracks and what it ignores. You should have created a new folder path: `output/figures/`. Write some code now to create a pretty figure using ggplot that shows the difference between control and acidification treatments for each of the fish species in the data set:
 
-```{r, prettyfig, fig.align='center', fig.cap="add a legend here"}
+```{r, prettyfig, fig.align='center', fig.cap="mean activity for each treatment for each species"}
 # ggplot figure showing mean activity for each treatment (Control, OA) for each species.
-
-
+Fig1 <- ggplot(data_group, aes(x = treatment, y = mean_activity, fill = treatment)) +
+  geom_col() +
+  facet_wrap(~ species, nrow = 2)
+Fig1
+# Save the plot
+ggsave('./output/figures/mean_activity.png')
 ```
 
 **Stretch Task**: The Clark et al. 2020 paper plots some pretty pictures on their figures. You have access to a folder called "pics/". Add the pics of the difference species from the "pics/" folder to your new plot. Explore the function `annotation_raster()` which might help you achieve this goal.
@@ -175,14 +179,70 @@ Note the code chunk used to make the figure. It has a `fig.cap` argument. That m
 Now that you have the figure you may also want to write / save it as a separate file. Use `ggsave` function to save the figure(s) to your new `output/figures/`:
 
 ```{r, savefig}
+# Load the pictures
+pacantho <- readPNG('./pics/acantho.png')
+pambon <- readPNG('./pics/ambon.png')
+pchromis <- readPNG('./pics/chromis.png')
+phumbug <- readPNG('./pics/humbug.png')
+plemon <- readPNG('./pics/lemon.png')
+pwhitedams <- readPNG('./pics/whitedams.png')
+# Make a new plot with pics
+# For acantho 
+acantho <- data_group %>% filter(species == "acantho")
+p1 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(pacantho, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Acantho") +
+  theme(legend.position = 'none', axis.title.x=element_blank(), axis.text.x=element_blank())
+# For ambon 
+ambon <- data_group %>% filter(species == "ambon")
+p2 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(pambon, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Ambon") +
+  theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank()) +
+  theme(legend.position = 'none', axis.title.x=element_blank(), axis.text.x=element_blank())
+# For acantho 
+chromis <- data_group %>% filter(species == "chromis")
+p3 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(pchromis, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Chromis") +
+  theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank()) +
+  theme(legend.position = 'none', axis.title.x=element_blank(), axis.text.x=element_blank())
+# For acantho 
+humbug <- data_group %>% filter(species == "humbug")
+p4 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(phumbug, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Humbug") +
+  theme(legend.position = 'none')
+# For acantho 
+lemon <- data_group %>% filter(species == "lemon")
+p5 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(plemon, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Lemon") +
+  theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank())
+# For acantho 
+whitedams <- data_group %>% filter(species == "whitedams")
+p6 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(pwhitedams, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Whitedams") +
+  theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank())
+# Patch the six pics
+pall <- p1 + p2 + p3 + p4 + p5 + p6
+pall
 # Use ggsave to save the figure
-
+ggsave('./output/figures/mean_activity_fish.png', )
 ```
 
 >**Question 6**: Given that you have added `output/figures/` to your `.gitignore` file describe what you notice about what you see in *GitHub Desktop*. 
 
 ```{r}
 ## Write your answer here
+# It seems like nothing happens in the "Changes" part of GitHub Desktop, because changes in the figures file has been "ignored".
 ```
 
 Last question for this task. I promise! It's important to think very carefully about what you track and ignore.
@@ -191,6 +251,7 @@ Last question for this task. I promise! It's important to think very carefully a
 
 ```{r, answer6}
 ## Add your answer here
+
 ```
 
 # **Task 6**
