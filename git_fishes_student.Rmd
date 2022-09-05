@@ -53,7 +53,7 @@ This task involves cloning your repository on your computer. Where should we pla
 
 ```{r, answer1, echo=TRUE, eval = FALSE}
 # Write your answer here
-1. Backup software provides automatic backup function, while Github requires manual upload.
+1. Backup software provides automatic backup function, while Github requires manual push.
 2. Backup software is private, while Github is public (at least among colleagues) — If a chunk is not fully complete, you probably do not want to share it online.
 3. Github will not be able to track files of commercial softwares like Word and Excel.
 4. Github is easyly to have a conflict if you have mane colleagues working at the same time.
@@ -96,10 +96,10 @@ Make sure you have added a `data/` folder to your working directory that you jus
 
 Write your answer in the code chunk below:
 
-```{r, loaddata, eval = FALSE, echo=TRUE}
-
+```{r, loaddata, eval = FALSE}
+# Give the path of row data
 path <- "./data/OA_activitydat_20190302_BIOL3207.csv"
-  
+# Read the data 
 data <- read_csv(path)
 
 ```
@@ -108,10 +108,10 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 
 >**Question 4**: Using the `write_csv` function how would you write the path name to save this file to `output/data`?
 
-```{r, write, eval = FALSE, echo=TRUE}
-
+```{r, write, eval = FALSE}
+# Give the path of edited data
 path <- "./output/data.csv"
-
+# Write the data
 write_csv(data, file = path)
 
 ```
@@ -126,19 +126,26 @@ First, write some code below to remove missing data
 ```{r, rmMiss}
 # Code to removing missing data from the `OA_activitydat_20190302_BIOL3207.csv` data frame. 
 data_narm <- data %>% filter(complete.cases(data))
+# Have a quick look
+head(data_narm, 10)
 ```
 
 Second, drop out irrelevant columns and check that there are no spelling issues in `species` and `treatment`. Create a table of summary data that includes: 1) the mean, 2) the standard error and 3) the sample sizes of unique fish across ALL six fish species for each treatment. This will also help you detect any spelling errors. You can use the R package [`flextable`](https://ardata-fr.github.io/flextable-book/) to print out the results in a nice neat format! If you haven't heard about `flextable` spend 10 or so minutes having a look at it's functionality. It's incredible! You'll use this for tables throughout.
 
 ```{r summaryTab}
 # Drop irrelevant columns
-data_useful <- data_narm[, c(-1, -2, -9)]
+data_useful <- data_narm[, c(-1, -2, -5, -7, -9)]
+# Have a quick look
+head(data_useful, 10)
 # Check spelling in species and treatment but also generate a summary table
-table_sp_tr <- as.matrix(table(data_useful$treatment, data_useful$species))
-
+data_group <- data_useful %>% group_by(species, treatment) %>%  
+  # Calculate mean and standard error of "sl" and "activity"
+  mutate(sample_size = length(sl), mean_sl = mean(sl), se_sl = sd(sl) / (sqrt(length(sl))), mean_activity = mean(activity), se_activity = sd(activity) / (sqrt(length(activity))))
+# Delete duplicate data and sort
+data_summary <- data_group %>% .[, c(-3, -4)] %>% .[!duplicated(.), ] %>% .[order(.$species, .$treatment), ]
 # Use flextable to render the summary table in a tidy format
-
-flextable(data_useful)
+flextable(data_summary) %>% add_header_lines(., values = "Table 1: Summary of data") %>% align(., align = "left")
+# There is no abnormal sample size, which means no spelling mistakes
 ```
 
 **STOP**: Before moving on, it's a good time to establish some good *GitHub* practices. You have just done an important step. It's time to save this file, stage it and commit it so that you have a record. Push these changes up using *GitHub Desktop*. It's important to do this frequently. It's probably not needed after every line of code, but it's good to do this when you have completed an important coding step. Of course, there's no harm in doing it more often. It will provide fine-scale tracking for you!
