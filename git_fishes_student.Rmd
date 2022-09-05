@@ -251,7 +251,7 @@ Last question for this task. I promise! It's important to think very carefully a
 
 ```{r, answer6}
 ## Add your answer here
-
+# I think it is not a bad idea to track these png files (and I have tried they can indeed be tracked) because they are source of our new plot above. Changes in these pictures will also change our final outcomes, so we should track them.
 ```
 
 # **Task 6**
