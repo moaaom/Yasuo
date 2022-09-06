@@ -292,16 +292,41 @@ Think about what you would need to know to make sure you can replicate a study. 
 There's not too much to do in this task on the coding front! You just need to create a *GitHub* issue and create a 'To Do' list on *GitHub* for you and your collaborator. 
 
 # **Task 9**
-Here, run some statistical tests to determine, for each species, whether the control vs high $CO^2$ treatments differ significantly from each other and in what direction. Provide the difference in means, their 95% confidence intervals, t-statistic, df and p-value. 
+Here, run some statistical tests to determine, for each species, whether the control vs high $CO^2$ treatments differ significantly from each other and in what direction. Provide the difference in means, their 95% confidence intervals, t-statistic, df and p-value.
 
 >**Stretch Task**: You can of course do this for each species seperately, but those who want a challenge, think about how you might use a loop or even some wrangling methods you have already learnt from the tidyverse to run these tests across all 6 species in a single block of code. If you're familiar with functions, you can even think about writing your own function! All these strategies will avoid having to copy and paste large chunks of code. If you're repeating anything, writing functions and loops are good ways to simplify.
 
 ```{r, stats, echo=TRUE, eval=TRUE}
 # Add your code here
+# Add a repeat time
+n_rep <- length(levels(as.factor(data_group$species))) * length(levels(as.factor(data_group$treatment)))
+# Add a list to store filtered data
+data_sort <- list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+# Add a tibble to store results
+t_result <- tibble(species = c("1", "1", "1", "1", "1", "1"), mean_diff = 1.1:6.1, CI_min = 1.1:6.1, CI_max = 1.1:6.1, t = 1.1:6.1, df = 1.1:6.1, p = 1.1:6.1)
+# Use for loop to calculate results
+for (i in seq(1, n_rep, 2)) {
+  # Filter data by species and treatment
+  data_sort[[i]] <- data_group %>% filter(species == levels(as.factor(data_group$species))[(i + 1) / 2] & treatment ==	"control")
+  data_sort[[i + 1]] <- data_group %>% filter(species == levels(as.factor(data_group$species))[(i + 1) / 2] & treatment ==	"CO2")
+  # Do t.test
+  tresult <- t.test(data_sort[[i]]$activity, data_sort[[i + 1]]$activity)
+  # Write results into the tibble
+  t_result[((i + 1) / 2), 1] <- levels(as.factor(data_group$species))[(i + 1) / 2]
+  t_result[((i + 1) / 2), 2] <- tresult$estimate[2] - tresult$estimate[1]
+  t_result[((i + 1) / 2), 3] <- tresult$conf.int[1]
+  t_result[((i + 1) / 2), 4] <- tresult$conf.int[2]
+  t_result[((i + 1) / 2), 5] <- tresult$statistic
+  t_result[((i + 1) / 2), 6] <- tresult$parameter
+  t_result[((i + 1) / 2), 7] <- tresult$p.value
+}
 ```
 
-```{r, table1, echo=TRUE, eval=TRUE, tab.cap = "write a caption here"}
+```{r, table1, echo=TRUE, eval=TRUE, tab.cap = "Table 2: Summary of t test"}
 # Using the resulting object created above, which should be a table with all the summary statistics, t, df and p-value for each species create a table. Note that there is a tab.cap argument in the chunk arguments. Write a caption here. 
+# Use flextable to render the summary table in a tidy format
+flextable(t_result) %>% add_header_lines(., values = "Table 2: Summary of t test") %>% add_footer_lines(., values = c("mean_diff, mean difference of activity of treatnent and control (treatment - control)", "CI_min, minimum of the 95% confidence interval", "CI_max, maximum of the 95% confidence interval", "t, t-statistic", "df, degree of freedom", "p, p-value"))
+# We can see the treatment (CO2) only affect species humbug and lemon significantly with p-value 0.021 and 0.071, respectively. The mean difference of the two are both positive, which means CO2 lead to greater activity value in directions.
 ```
 
 Now that you have a table, you can reference it within a document. For example, you can make a call to Table \@ref(tab:table1) by referring to the name of the code chunk. When you knit the html it will create a hyperlink to your table and insert a legend above the table for you. How cool is that!?
