@@ -82,7 +82,7 @@ pl <- ggplot(data_species[[1]], aes(x = treatment, y = activity, color = treatme
   theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) +
   scale_color_manual(values = c("#5b5b5b", "#48a2ed"))
 list_plot[[1]] <- pl
-# Make the figure
+# Make the matrix plot
 for (i in 2 : n_rep) {
   pl <- ggplot(data_species[[i]], aes(x = treatment, y = activity, color = treatment)) +
     stat_summary(fun.y = mean, geom = "point", shape = 23, size=4) +
@@ -100,7 +100,8 @@ pall <- list_plot[[1]] + list_plot[[2]] + list_plot[[3]] + list_plot[[4]] + list
 
 ggsave('./output/figures/activity.png', width = 500, height = 150, units = "mm")
 
-image_read('./output/figures/activity.png') %>% 
+# Add simple size for each plot
+Fig10 <- image_read('./output/figures/activity.png') %>% 
   image_annotate(., text = "n = 8", location = "+260+1550", size = 40, color = "black") %>% 
   image_annotate(., text = "n = 8", location = "+380+1550", size = 40, color = "black") %>% 
   image_annotate(., text = "n = 28", location = "+550+1550", size = 40, color = "black") %>% 
@@ -118,8 +119,18 @@ image_read('./output/figures/activity.png') %>%
   image_annotate(., text = "n = 30", location = "+4280+1550", size = 40, color = "black") %>% 
   image_annotate(., text = "n = 19", location = "+4670+1550", size = 40, color = "black") %>% 
   image_annotate(., text = "n = 61", location = "+5220+1550", size = 40, color = "black") %>% 
-  image_annotate(., text = "n = 61", location = "+5600+1550", size = 40, color = "black") %>% 
-   
-  image_write(., path = './output/figures/activity.png', format = "png")
+  image_annotate(., text = "n = 61", location = "+5600+1550", size = 40, color = "black")
 
+# Output the final figure  
+  image_write(Fig10, path = './output/figures/activity.png', format = "png")
+
+Fig10
 ```
+
+>**Question 10**: What are the challenges, if any, that you encounter in reproducing this figure?
+
+# Describe challenges
+
+1. Even though I made a similar image (with same information), I think I used the most complicated method (some hard codes). It is because I do not learn enough about R.
+
+2. Because of the different functions I used from the authors, some aesthetic pattern cannot be completely reproduced.

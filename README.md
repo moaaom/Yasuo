@@ -9,11 +9,9 @@ The repo main introduces how to use Git and Github, and calculate mean activity 
 
 ---
 
-## DATA CONTENT
+## CONTENT
 
-For files in ./data
-
-The ".rmd" file is the main coding file, which can do some certain data process.
+The ".rmd" file is the main coding files, which can do some certain data process.
 
 The "data" floder includes original data from [Clark et al., 2020](https://doi.org/10.1038/s41586-019-1903-y), which will be used as a data resource.
 
@@ -29,13 +27,11 @@ The ".Rproj" file help you set the work direction.
 
 The ".gitignore" file includes direction that not be tracked.
 
-The ".Rhistory" file includes history of  R of the process.
-
 ---
 
 ## HOW TO USE
 
-1. Put data into the "data" file. The detailed meta-data for each column are as follows:
+Fist step, put data into the "data" file. The detailed meta-data for each column are as follows:
 
 | Column Name | Description|
 | - | - |
@@ -48,17 +44,17 @@ The ".Rhistory" file includes history of  R of the process.
 | activity | Number of seconds the fish was active per minute, averaged across the duration of the trial|
 | comment | Comment with notes on the origin of the data|
 
-If you use other data, please DO NOT change the file name "OA_activitydat_20190302_BIOL3207.csv".
+P.S. If you use other data, please DO NOT change the file name "OA_activitydat_20190302_BIOL3207.csv".
 
-2. Put figures of the six fish species (names shown in each figure name) into the "pics" file. If you use other data, please DO NOT change the file names of the figures.
+Then, put figures of the six fish species (names shown in each figure name) into the "pics" file. If you use other data, please DO NOT change the file names of the figures.
 
-3. Knit the ".rmd" file.
+Finally, knit the ".rmd" file.
 
 ---
 
 ## READ RESULTS
 
-1. The file in direction "./output/data" is a processed data removed missing value and irrelevant columns from original data. The detailed meta-data for each column are as follows:
+1. The "data_raw" in direction "./output/data" is the raw data set. The "data_useful" file is a processed data removed missing value and irrelevant columns from original data. The detailed meta-data for each column are as follows:
 
 | Column Name | Description |
 | - | - |

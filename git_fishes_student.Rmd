@@ -109,7 +109,7 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 
 ```{r, write}
 # Give the path of edited data
-path <- "./output/data/data_out.csv"
+path <- "./output/data/data_raw.csv"
 # Write the data
 write_csv(data_raw, file = path)
 
@@ -131,19 +131,21 @@ head(data_narm, 10)
 
 Second, drop out irrelevant columns and check that there are no spelling issues in `species` and `treatment`. Create a table of summary data that includes: 1) the mean, 2) the standard error and 3) the sample sizes of unique fish across ALL six fish species for each treatment. This will also help you detect any spelling errors. You can use the R package [`flextable`](https://ardata-fr.github.io/flextable-book/) to print out the results in a nice neat format! If you haven't heard about `flextable` spend 10 or so minutes having a look at it's functionality. It's incredible! You'll use this for tables throughout.
 
-```{r summaryTab}
+```{r summaryTab, tab.cap= "Summary of activity data"}
 # Drop irrelevant columns
 data_useful <- data_narm[, c(3, 4, 8)]
 # Have a quick look
 head(data_useful, 10)
+# Output the data set
+write_csv(data_useful, file = "./output/data/data_useful.csv")
 # Check spelling in species and treatment but also generate a summary table
 data_group <- data_useful %>% group_by(species, treatment) %>%  
   # Calculate mean and standard error of "sl" and "activity"
-  mutate(N = length(activity), mean_activity = mean(activity), se_activity = sd(activity) / (sqrt(length(activity))))
+  mutate(size = length(activity), mean_activity = mean(activity), se_activity = sd(activity) / (sqrt(length(activity))))
 # Delete duplicate data and sort
 data_summary <- data_group %>% .[, c(-3)] %>% .[!duplicated(.), ] %>% .[order(.$species, .$treatment), ]
 # Use flextable to render the summary table in a tidy format
-flextable(data_summary) %>% add_header_lines(., values = "Table 1: Summary of activity data") %>% align(., align = "left") %>% add_footer_lines(., values = c("N, sample size", "mean_activity, mean of activity", "se_activity, standard error of activity")) 
+flextable(data_summary) %>% add_header_lines(., values = "Summary of activity data") %>% align(., align = "left") %>% add_footer_lines(., values = c("size, sample size", "mean_activity, mean of activity", "se_activity, standard error of activity")) 
 # There is no abnormal sample size, which means no spelling mistakes
 ```
 
@@ -283,8 +285,8 @@ p5 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) +
   ggtitle("Mean activity of Lemon") +
   theme(axis.title.y=element_blank(), axis.text.y=element_blank())
 # Patch the six pics
-pall <- p1 + p3 + p5
-pall
+Fig3 <- p1 + p3 + p5
+Fig3
 # Use ggsave to save the figure
 ggsave('./output/figures/mean_activity_fish_three.png', )
 ```
@@ -351,10 +353,10 @@ for (i in seq(1, n_rep, 2)) {
 }
 ```
 
-```{r, table1, echo=TRUE, eval=TRUE, tab.cap = "Table 2: Summary of t test"}
+```{r, table1, echo=TRUE, eval=TRUE, tab.cap = "Summary of t test"}
 # Using the resulting object created above, which should be a table with all the summary statistics, t, df and p-value for each species create a table. Note that there is a tab.cap argument in the chunk arguments. Write a caption here. 
 # Use flextable to render the summary table in a tidy format
-flextable(t_result) %>% add_header_lines(., values = "Table 2: Summary of t test") %>% add_footer_lines(., values = c("mean_diff, mean difference of activity of treatnent and control (treatment - control)", "CI_lower, lower of the 95% confidence interval", "CI_upper, upper of the 95% confidence interval", "t, t-statistic", "df, degree of freedom", "p, p-value"))
+flextable(t_result) %>% add_header_lines(., values = "Summary of t test") %>% add_footer_lines(., values = c("mean_diff, mean difference of activity of treatnent and control (treatment - control)", "CI_lower, lower of the 95% confidence interval", "CI_upper, upper of the 95% confidence interval", "t, t-statistic", "df, degree of freedom", "p, p-value"))
 # We can see the treatment (CO2) only affect species humbug and lemon significantly with p-value 0.021 and 0.071, respectively. The mean difference of the two are both positive, which means CO2 lead to greater activity value in directions.
 ```
 
@@ -381,7 +383,7 @@ Re-analyse the data for a single species using permutations instead of a t-test.
 
 >**Stretch Task**:  If you really want a challenge try doing permutation tests for each species. Again, loops, functions or tidyverse (or even combinations might help). 
 
-```{r, stretch2, echo=TRUE}
+```{r, stretch2, echo=TRUE, tab.cap = "p-value from permutation test and t test"}
 # Add your code here.
 # Add a repeat time for each species
 n_rep_species <- length(levels(as.factor(data_group$species)))
@@ -415,13 +417,14 @@ for (k in 1 : n_rep_species) {
 }
 # Show the results for each species in a table
 permuted_tibble <- tibble(species = levels(as.factor(data_useful$species)), p.p = permuted_result, p.t = t_result$p)
-flextable(permuted_tibble, cwidth = 2, cheight = 2) %>% add_header_lines(., values = "Table 3: p-value from permutation test") %>% add_footer_lines(., values = c("p.p, p-value from permutation test", "p.t, p-value from t-test")) 
+flextable(permuted_tibble, cwidth = 2, cheight = 2) %>% add_header_lines(., values = "p-value from permutation test and t test") %>% add_footer_lines(., values = c("p.p, p-value from permutation test", "p.t, p-value from t-test")) 
 ```
 
 Below. Add a few sentences for the species (or multiple species) you talked about above to describe the permutation results:
 
 **Add your text and inline code chunks here**
-We can see the p-values from permutation test are similar with the p-values from t-test, in which only humbug and lemon species have significant difference between control and CO2 groups.
+
+We can see the p-values from permutation test are similar with the p-values from t-test, which confirms the authenticity of each other. Only humbug and lemon species have significant difference between control and CO2 groups, which means CO2 can affect the activity of the two species.
 
 # **Task 10**
 
