@@ -1,0 +1,94 @@
+---
+title: "Git, GitHub & Ocean Acidification Task #10"
+author: "Yusheng_Wang_u7457423"
+date: "`r Sys.Date()`"
+output: 
+  bookdown::html_document2:
+    code_folding: show
+    number_sections: no
+    toc: yes
+    toc_depth: 6
+    toc_float: yes
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+options(digits=2)
+```
+
+# **Task 10**
+
+This is a stretch task on the use of *GitHub* and the challenges (or maybe lack of challenges) of reproducing others' work. If you finish the above tasks, then, have a crack at this one. See the html for details.
+
+>**Question 9**: Think about some things that can be improved in their code. 
+List 3 things you think could be improved and provide a brief explanation for why.
+
+# 1) They only commented what they would do in the following several codes, rather than commenting each code line. They could make more detailed comments to explain what each function and argument do. In this way readers can easier to understand how their codes work.
+# 2) They did not specify clearly which piese of code is used to analyse which content, table or figure in their paper. They could make more comments to show the relation of paper content and codes. In this way readers can review and reproduce their work better.
+# 3) They used lots of functions from base R, rather than packages like tidyverse. They could re-write their codes with these advanced and commonly used packages to simplify their codes. In this way readers can get more familiar their codes and have a better understand.
+
+>**reproduce Fig. 4**:
+
+```{r}
+# Load packages
+library(pacman)
+p_load(tidyverse, ggplot2, patchwork)
+```
+
+
+```{r}
+# Load the data
+data_raw <- read_csv("./data/OA_activitydat_20190302_BIOL3207.csv")
+# Separate the loc column
+data_sep <- separate(data_raw, loc, into = c("loc", "year"))
+# Filter irrelevant data
+data_useful <- data_sep[, c(3, 4, 5, 9)]
+# Remove NA
+data_useful <- data_useful %>% filter(complete.cases(.))
+# Have a quick look
+head(data_useful, 10)
+```
+
+```{r}
+# Set time of loop
+n_rep <- length(levels(as.factor(data_useful$species)))
+# Set a list to store data
+data_species <- list(1, 2, 3, 4, 5, 6)
+# Filter data by species
+for (i in 1 : n_rep) {
+  data_species[[i]] <- data_useful %>% filter(species == levels(as.factor(data_useful$species))[i])
+}
+# Have a look
+data_species
+```
+
+
+```{r}
+# Set a list to store plots
+list_plot <- list(1, 2, 3, 4, 5, 6)
+# Make the first plot
+pl <- ggplot(data_species[[1]], aes(x = treatment, y = activity, color = treatment)) +
+  geom_boxplot() +
+  stat_summary(fun.y = mean, geom = "point", shape = 23, size=2) +
+  geom_point() +
+  labs(y = "Activity duration (s min-1)") +
+  facet_wrap(~ year) +
+  theme(legend.position = 'none', axis.title.x=element_blank(), axis.text.x=element_blank()) +
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+list_plot[[1]] <- pl
+# Make the figure
+for (i in 2 : n_rep) {
+  pl <- ggplot(data_species[[i]], aes(x = treatment, y = activity, color = treatment)) +
+    geom_boxplot() +
+    stat_summary(fun.y = mean, geom = "point", shape = 23, size=2) +
+    geom_point() +
+    facet_wrap(~ year) +
+    theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank()) +
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+  list_plot[[i]] <- pl
+}
+
+pall <- list_plot[[1]] + list_plot[[2]] + list_plot[[3]] + list_plot[[4]] + list_plot[[5]] + list_plot[[6]] + plot_layout(nrow = 1) + plot_annotation(tag_levels = 'a')
+ggsave('./output/figures/Fish.png', width = 1000, height = 300, units = "mm")
+```
+

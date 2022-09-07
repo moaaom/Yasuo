@@ -139,7 +139,7 @@ head(data_useful, 10)
 # Check spelling in species and treatment but also generate a summary table
 data_group <- data_useful %>% group_by(species, treatment) %>%  
   # Calculate mean and standard error of "sl" and "activity"
-  mutate(sample_size = length(sl), mean_sl = mean(sl), se_sl = sd(sl) / (sqrt(length(sl))), mean_activity = mean(activity), se_activity = sd(activity) / (sqrt(length(activity))))
+  mutate(sample_size = length(activity), mean_activity = mean(activity), se_activity = sd(activity) / (sqrt(length(activity))))
 # Delete duplicate data and sort
 data_summary <- data_group %>% .[, c(-3, -4)] %>% .[!duplicated(.), ] %>% .[order(.$species, .$treatment), ]
 # Use flextable to render the summary table in a tidy format
