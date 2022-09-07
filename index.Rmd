@@ -32,7 +32,7 @@ List 3 things you think could be improved and provide a brief explanation for wh
 ```{r}
 # Load packages
 library(pacman)
-p_load(tidyverse, ggplot2, patchwork)
+p_load(tidyverse, ggplot2, patchwork, Hmisc, png, magick)
 ```
 
 
@@ -53,10 +53,13 @@ head(data_useful, 10)
 # Set time of loop
 n_rep <- length(levels(as.factor(data_useful$species)))
 # Set a list to store data
-data_species <- list(1, 2, 3, 4, 5, 6)
+data_species <- list(1, 2, 3, 4, 5, 6, 7, 8, 9)
 # Filter data by species
 for (i in 1 : n_rep) {
   data_species[[i]] <- data_useful %>% filter(species == levels(as.factor(data_useful$species))[i])
+  
+  # Change the level of treatment
+  data_species[[i]]$treatment <- factor(data_species[[i]]$treatment, levels = rev(levels(as.factor((data_species[[i]]$treatment)))))
 }
 # Have a look
 data_species
@@ -65,30 +68,63 @@ data_species
 
 ```{r}
 # Set a list to store plots
-list_plot <- list(1, 2, 3, 4, 5, 6)
+list_plot <- list(1, 2, 3, 4, 5, 6, 7, 8, 9)
 # Make the first plot
 pl <- ggplot(data_species[[1]], aes(x = treatment, y = activity, color = treatment)) +
-  stat_summary(fun.y = mean, geom = "point", shape = 23, size=2) +
-  geom_jitter(width = 0.1) +
-  geom_errorbar(aes(ymin = activity - sd, ymax = activity + sd)) +
+  stat_summary(fun.y = mean, geom = "point", shape = 23, size=4) +
+  geom_jitter(width = 0.2, ) +
+  stat_summary(fun.data = mean_se) +
   labs(y = "Activity duration (s min-1)") +
-  facet_wrap(~ year) +
+  facet_grid(~ year, margins = c("n = 1", "n=2")) +
   theme(legend.position = 'none', axis.title.x=element_blank(), axis.text.x=element_blank()) +
-  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+  theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) +
+  scale_color_manual(values = c("#5b5b5b", "#48a2ed"))
 list_plot[[1]] <- pl
 # Make the figure
 for (i in 2 : n_rep) {
   pl <- ggplot(data_species[[i]], aes(x = treatment, y = activity, color = treatment)) +
-    geom_boxplot() +
-    stat_summary(fun.y = mean, geom = "point", shape = 23, size=2) +
-    geom_jitter(width = 0.1) +
-    facet_wrap(~ year) +
+    stat_summary(fun.y = mean, geom = "point", shape = 23, size=4) +
+    geom_jitter(width = 0.2) +
+    stat_summary(fun.data = mean_se) +
+    facet_grid(~ year) +
     theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
-    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
+    theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5)) +
+    scale_color_manual(values = c("#5b5b5b", "#48a2ed"))
   list_plot[[i]] <- pl
 }
 
-pall <- list_plot[[1]] + list_plot[[2]] + list_plot[[3]] + list_plot[[4]] + list_plot[[5]] + list_plot[[6]] + plot_layout(nrow = 1) + plot_annotation(tag_levels = 'a')
-ggsave('./output/figures/Fish.png', width = 1000, height = 300, units = "mm")
+pall <- list_plot[[1]] + list_plot[[2]] + list_plot[[3]] + list_plot[[4]] + list_plot[[5]] + list_plot[[6]] + plot_layout(nrow = 1) +
+  plot_annotation(tag_levels = 'a') & theme(plot.tag = element_text(size = 30))
+
+ggsave('./output/figures/activity.png', width = 500, height = 150, units = "mm")
+
+image_read('./output/figures/activity.png') %>% 
+  image_annotate(., text = "n = 8", location = "+260+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 8", location = "+380+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 28", location = "+550+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 38", location = "+670+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 63", location = "+830+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 49", location = "+950+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 21", location = "+1380+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 22", location = "+1750+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 20", location = "+2350+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 14", location = "+2730+1550", size = 40, color = "black") %>%
+  image_annotate(., text = "n = 23", location = "+3200+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 23", location = "+3370+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 48", location = "+3630+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 46", location = "+3850+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 30", location = "+4280+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 19", location = "+4670+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 61", location = "+5220+1550", size = 40, color = "black") %>% 
+  image_annotate(., text = "n = 61", location = "+5600+1550", size = 40, color = "black") %>% 
+   
+  image_write(., path = './output/figures/Fish.png', format = "png")
+
 ```
 
+```{r}
+n <- data_useful %>% filter(., species == "whitedams" & year == "2016" & treatment == "control") ; nrow(n)
+```
+```{r}
+n <- data_useful %>% filter(., species == "whitedams" & year == "2016" & treatment == "CO2") ; nrow(n)
+```
