@@ -2,6 +2,9 @@
 .Rhistory
 .RData
 .Ruserdata
-output/
+output/data/data_raw.csv
+output/figures/Fish.png
+output/figures/mean_activity.png
+output/figures/mean_activity_fish.png
 git_fishes_student.html
-git_fishes_student.html
+output/figures/mean_activity_fish_three.png

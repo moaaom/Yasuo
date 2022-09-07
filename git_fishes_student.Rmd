@@ -286,7 +286,7 @@ p5 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) +
 pall <- p1 + p3 + p5
 pall
 # Use ggsave to save the figure
-ggsave('./output/figures/mean_activity_fish.png', )
+ggsave('./output/figures/mean_activity_fish_three.png', )
 ```
 
 
