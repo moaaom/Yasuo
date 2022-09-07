@@ -23,9 +23,11 @@ This is a stretch task on the use of *GitHub* and the challenges (or maybe lack 
 >**Question 9**: Think about some things that can be improved in their code. 
 List 3 things you think could be improved and provide a brief explanation for why.
 
-# 1) They only commented what they would do in the following several codes, rather than commenting each code line. They could make more detailed comments to explain what each function and argument do. In this way readers can easier to understand how their codes work.
-# 2) They did not specify clearly which piese of code is used to analyse which content, table or figure in their paper. They could make more comments to show the relation of paper content and codes. In this way readers can review and reproduce their work better.
-# 3) They used lots of functions from base R, rather than packages like tidyverse. They could re-write their codes with these advanced and commonly used packages to simplify their codes. In this way readers can get more familiar their codes and have a better understand.
+1) They only commented what they would do in the following several codes, rather than commenting each code line. They could make more detailed comments to explain what each function and argument do. In this way readers can easier to understand how their codes work.
+ 
+2) They did not specify clearly which piese of code is used to analyse which content, table or figure in their paper. They could make more comments to show the relation of paper content and codes. In this way readers can review and reproduce their work better.
+ 
+3) They used lots of functions from base R, rather than packages like tidyverse. They could re-write their codes with these advanced and commonly used packages to simplify their codes. In this way readers can get more familiar their codes and have a better understand.
 
 >**reproduce Fig. 4**:
 
@@ -118,13 +120,6 @@ image_read('./output/figures/activity.png') %>%
   image_annotate(., text = "n = 61", location = "+5220+1550", size = 40, color = "black") %>% 
   image_annotate(., text = "n = 61", location = "+5600+1550", size = 40, color = "black") %>% 
    
-  image_write(., path = './output/figures/Fish.png', format = "png")
+  image_write(., path = './output/figures/activity.png', format = "png")
 
-```
-
-```{r}
-n <- data_useful %>% filter(., species == "whitedams" & year == "2016" & treatment == "control") ; nrow(n)
-```
-```{r}
-n <- data_useful %>% filter(., species == "whitedams" & year == "2016" & treatment == "CO2") ; nrow(n)
 ```
