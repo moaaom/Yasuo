@@ -202,7 +202,7 @@ p2 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) +
   ggtitle("Mean activity of Ambon") +
   theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank()) +
   theme(legend.position = 'none', axis.title.x=element_blank(), axis.text.x=element_blank())
-# For acantho 
+# For chromis 
 chromis <- data_group %>% filter(species == "chromis")
 p3 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
   annotation_raster(pchromis, -Inf, Inf, -Inf, Inf) +
@@ -210,21 +210,21 @@ p3 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) +
   ggtitle("Mean activity of Chromis") +
   theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank()) +
   theme(legend.position = 'none', axis.title.x=element_blank(), axis.text.x=element_blank())
-# For acantho 
+# For humbug 
 humbug <- data_group %>% filter(species == "humbug")
 p4 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
   annotation_raster(phumbug, -Inf, Inf, -Inf, Inf) +
   geom_col(alpha = 0.8) +
   ggtitle("Mean activity of Humbug") +
   theme(legend.position = 'none')
-# For acantho 
+# For lemon
 lemon <- data_group %>% filter(species == "lemon")
 p5 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
   annotation_raster(plemon, -Inf, Inf, -Inf, Inf) +
   geom_col(alpha = 0.8) +
   ggtitle("Mean activity of Lemon") +
   theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank())
-# For acantho 
+# For whitedams
 whitedams <- data_group %>% filter(species == "whitedams")
 p6 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
   annotation_raster(pwhitedams, -Inf, Inf, -Inf, Inf) +
@@ -235,7 +235,7 @@ p6 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) +
 pall <- p1 + p2 + p3 + p4 + p5 + p6
 pall
 # Use ggsave to save the figure
-ggsave('./output/figures/mean_activity_fish.png', )
+ggsave('./output/figures/mean_activity_fish.png')
 ```
 
 >**Question 6**: Given that you have added `output/figures/` to your `.gitignore` file describe what you notice about what you see in *GitHub Desktop*. 
@@ -261,7 +261,32 @@ Now, lets create a new figure in the code block below that simplifies the one pr
 
 ```{r, collabFig, echo=TRUE, fig.cap="mean activity for each treatment for three species"}
 # You want to make changes to your collaborators figure in Task 5. Maybe you want to create a figure that focuses only on three fish species instead of the 5. More specifically, chromis, lemon, and acantho. Add code here to revise their figure to do that.
-
+# For acantho 
+acantho <- data_group %>% filter(species == "acantho")
+p1 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(pacantho, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Acantho") +
+  theme(legend.position = 'none')
+# For chromis 
+chromis <- data_group %>% filter(species == "chromis")
+p3 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(pchromis, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Chromis") +
+  theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank())
+# For lemon
+lemon <- data_group %>% filter(species == "lemon")
+p5 <- ggplot(acantho, aes(x = treatment, y = mean_activity, fill = treatment)) + 
+  annotation_raster(plemon, -Inf, Inf, -Inf, Inf) +
+  geom_col(alpha = 0.8) +
+  ggtitle("Mean activity of Lemon") +
+  theme(axis.title.y=element_blank(), axis.text.y=element_blank())
+# Patch the six pics
+pall <- p1 + p3 + p5
+pall
+# Use ggsave to save the figure
+ggsave('./output/figures/mean_activity_fish.png', )
 ```
 
 
