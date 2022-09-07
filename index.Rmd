@@ -68,9 +68,9 @@ data_species
 list_plot <- list(1, 2, 3, 4, 5, 6)
 # Make the first plot
 pl <- ggplot(data_species[[1]], aes(x = treatment, y = activity, color = treatment)) +
-  geom_boxplot() +
   stat_summary(fun.y = mean, geom = "point", shape = 23, size=2) +
-  geom_point() +
+  geom_jitter(width = 0.1) +
+  geom_errorbar(aes(ymin = activity - sd, ymax = activity + sd)) +
   labs(y = "Activity duration (s min-1)") +
   facet_wrap(~ year) +
   theme(legend.position = 'none', axis.title.x=element_blank(), axis.text.x=element_blank()) +
@@ -81,9 +81,9 @@ for (i in 2 : n_rep) {
   pl <- ggplot(data_species[[i]], aes(x = treatment, y = activity, color = treatment)) +
     geom_boxplot() +
     stat_summary(fun.y = mean, geom = "point", shape = 23, size=2) +
-    geom_point() +
+    geom_jitter(width = 0.1) +
     facet_wrap(~ year) +
-    theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank()) +
+    theme(legend.position = 'none', axis.title.y=element_blank(), axis.text.y=element_blank(), axis.title.x=element_blank(), axis.text.x=element_blank()) +
     theme(axis.text.x = element_text(angle = 90, hjust = 1, vjust = .5))
   list_plot[[i]] <- pl
 }
