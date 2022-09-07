@@ -109,7 +109,7 @@ Let's say that you added a new data folder that was inside an output folder (i.e
 
 ```{r, write}
 # Give the path of edited data
-path <- "./output/data/data_raw.csv"
+path <- "./output/data/data_out.csv"
 # Write the data
 write_csv(data_raw, file = path)
 
@@ -133,17 +133,17 @@ Second, drop out irrelevant columns and check that there are no spelling issues 
 
 ```{r summaryTab}
 # Drop irrelevant columns
-data_useful <- data_narm[, c(-1, -2, -5, -7, -9)]
+data_useful <- data_narm[, c(3, 4, 8)]
 # Have a quick look
 head(data_useful, 10)
 # Check spelling in species and treatment but also generate a summary table
 data_group <- data_useful %>% group_by(species, treatment) %>%  
   # Calculate mean and standard error of "sl" and "activity"
-  mutate(sample_size = length(activity), mean_activity = mean(activity), se_activity = sd(activity) / (sqrt(length(activity))))
+  mutate(N = length(activity), mean_activity = mean(activity), se_activity = sd(activity) / (sqrt(length(activity))))
 # Delete duplicate data and sort
-data_summary <- data_group %>% .[, c(-3, -4)] %>% .[!duplicated(.), ] %>% .[order(.$species, .$treatment), ]
+data_summary <- data_group %>% .[, c(-3)] %>% .[!duplicated(.), ] %>% .[order(.$species, .$treatment), ]
 # Use flextable to render the summary table in a tidy format
-flextable(data_summary) %>% add_header_lines(., values = "Table 1: Summary of data") %>% align(., align = "left")
+flextable(data_summary) %>% add_header_lines(., values = "Table 1: Summary of activity data") %>% align(., align = "left") %>% add_footer_lines(., values = c("N, sample size", "mean_activity, mean of activity", "se_activity, standard error of activity")) 
 # There is no abnormal sample size, which means no spelling mistakes
 ```
 

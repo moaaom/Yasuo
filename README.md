@@ -11,6 +11,8 @@ The repo main introduces how to use Git and Github, and calculate mean activity 
 
 ## DATA CONTENT
 
+For files in ./data
+
 The ".rmd" file is the main coding file, which can do some certain data process.
 
 The "data" floder includes original data from [Clark et al., 2020](https://doi.org/10.1038/s41586-019-1903-y), which will be used as a data resource.
