@@ -302,15 +302,19 @@ Here, run some statistical tests to determine, for each species, whether the con
 n_rep <- length(levels(as.factor(data_group$species))) * length(levels(as.factor(data_group$treatment)))
 # Add a list to store filtered data
 data_sort <- list(1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12)
+# Add a vector to store t-statistic
+t_statistic <- 1:6
 # Add a tibble to store results
-t_result <- tibble(species = c("1", "1", "1", "1", "1", "1"), mean_diff = 1.1:6.1, CI_min = 1.1:6.1, CI_max = 1.1:6.1, t = 1.1:6.1, df = 1.1:6.1, p = 1.1:6.1)
+t_result <- tibble(species = c("1", "1", "1", "1", "1", "1"), mean_diff = 1.1:6.1, CI_lower = 1.1:6.1, CI_upper = 1.1:6.1, t = 1.1:6.1, df = 1.1:6.1, p = 1.1:6.1)
 # Use for loop to calculate results
 for (i in seq(1, n_rep, 2)) {
   # Filter data by species and treatment
-  data_sort[[i]] <- data_group %>% filter(species == levels(as.factor(data_group$species))[(i + 1) / 2] & treatment ==	"control")
-  data_sort[[i + 1]] <- data_group %>% filter(species == levels(as.factor(data_group$species))[(i + 1) / 2] & treatment ==	"CO2")
+  data_sort[[i]] <- data_useful %>% filter(species == levels(as.factor(data_useful$species))[(i + 1) / 2] & treatment ==	"control")
+  data_sort[[i + 1]] <- data_useful %>% filter(species == levels(as.factor(data_useful$species))[(i + 1) / 2] & treatment ==	"CO2")
   # Do t.test
   tresult <- t.test(data_sort[[i]]$activity, data_sort[[i + 1]]$activity)
+  # Write t_statistic into the vector
+  t_statistic[(i + 1) / 2] <- tresult$statistic
   # Write results into the tibble
   t_result[((i + 1) / 2), 1] <- levels(as.factor(data_group$species))[(i + 1) / 2]
   t_result[((i + 1) / 2), 2] <- tresult$estimate[2] - tresult$estimate[1]
@@ -325,7 +329,7 @@ for (i in seq(1, n_rep, 2)) {
 ```{r, table1, echo=TRUE, eval=TRUE, tab.cap = "Table 2: Summary of t test"}
 # Using the resulting object created above, which should be a table with all the summary statistics, t, df and p-value for each species create a table. Note that there is a tab.cap argument in the chunk arguments. Write a caption here. 
 # Use flextable to render the summary table in a tidy format
-flextable(t_result) %>% add_header_lines(., values = "Table 2: Summary of t test") %>% add_footer_lines(., values = c("mean_diff, mean difference of activity of treatnent and control (treatment - control)", "CI_min, minimum of the 95% confidence interval", "CI_max, maximum of the 95% confidence interval", "t, t-statistic", "df, degree of freedom", "p, p-value"))
+flextable(t_result) %>% add_header_lines(., values = "Table 2: Summary of t test") %>% add_footer_lines(., values = c("mean_diff, mean difference of activity of treatnent and control (treatment - control)", "CI_lower, lower of the 95% confidence interval", "CI_upper, upper of the 95% confidence interval", "t, t-statistic", "df, degree of freedom", "p, p-value"))
 # We can see the treatment (CO2) only affect species humbug and lemon significantly with p-value 0.021 and 0.071, respectively. The mean difference of the two are both positive, which means CO2 lead to greater activity value in directions.
 ```
 
@@ -333,30 +337,66 @@ Now that you have a table, you can reference it within a document. For example, 
 
 > **Question 8**: Pick one of your favorite species and write about the results to a reader. Write in the Rmarkdown file below what 1) the means and mean differences between control and acidification treatment is along with 2) the 95% confidence intervals of the difference
 
-You can write your blurb below this. Before you do that, a few cool features of Rmarkdown. You can actually code in objects so that, when they are rendered they replace the inline code chunk with the result. To give you an example, an inline code chunk is written as follows: `r "add code here"`. When you render the document, whatever you place in the "add code here" section will be rendered. In this case, we are giving a string, so it simply just adds that in the place where the code is, render and see for yourself.  
+You can write your blurb below this. Before you do that, a few cool features of Rmarkdown. You can actually code in objects so that, when they are rendered they replace the inline code chunk with the result. To give you an example, an inline code chunk is written as follows: `r "add code here"`. When you render the document, whatever you place in the "add code here" section will be rendered. In this case, we are giving a string, so it simply just adds that in the place where the code is, render and see for yourself. 
 
 Moving forward on that you can also add in an object and whatever that objects value is will also be spit out. For example, consider the following: `r x = 10; x`. What will happen? Well, it will place in the value 10 when rendered. Again, if you don't believe me, check for yourself by rendering the document. 
 
 This is all **VERY** cool because that means if your code or data change than you can update your entire report very fast. It's also 100% reproducible. We know exactly where every single value in your report comes from. This is all pretty helpful when you want to check your code and report side-by-side. Now that you have a bit more detail fill in the following:
 
-Mean activity for `r "species name here"` in the control group was `r "add code to place mean for control"` (s / min) compared to the OA treatment group, which was `r "mean for acidificaton treatment"` (s / min). The difference between control and OA treatment means was `r "code mean difference bw treatment"` (s / min) (95% CI: `r "code for lower CI"` to `r "code for upper CI"`). 
+Mean activity for `r "whitedams"` in the control group was `r tresult$estimate[1]` (s / min) compared to the OA treatment group, which was `r tresult$estimate[2]` (s / min). The difference between control and OA treatment means was `r tresult$estimate[2] - tresult$estimate[1]` (s / min) (95% CI: `r tresult$conf.int[1]` to `r tresult$conf.int[2]`). 
 
 Now, using what you just learnt, describe what the null hypothesis being tested was and provide statistical evidence (t-statistic, df, and p-value) to support your conclusion about whether we can reject the null hypothesis. Again, make sure you use in-line code. Write you answer below:
 
 **Write your answer here**
 
+Null hypothesis: there is no significant difference between activity of CO2 group and control group of whitedams species.
+We can see the degree of freedom is `r tresult$parameter`, calculate t-statistic is `r tresult$statistic` and p-value is `r tresult$p.value`. The p-value is greater than alpha = 0.05, so we cannot reject null hypothesis. 
 
 Re-analyse the data for a single species using permutations instead of a t-test. Do your results differ?
 
 >**Stretch Task**:  If you really want a challenge try doing permutation tests for each species. Again, loops, functions or tidyverse (or even combinations might help). 
 
-```{r, stretch2, echo=TRUE, eval=FALSE}
+```{r, stretch2, echo=TRUE}
 # Add your code here.
+# Add a repeat time for each species
+n_rep_species <- length(levels(as.factor(data_group$species)))
+# Add a repeat time for permuted
+n_rep_permuted <- 100
+# Add a list to store filtered data
+data_species <- list(1, 2, 3, 4, 5, 6)
+# Add a vector to store results for each species
+permuted_result <- 1:6
+# Add a vector to store results for each sample
+samp_dist <- 1 : n_rep_permuted
+# Filter data by species
+for (i in 1 : n_rep_species) {
+  
+  data_species[[i]] <- data_useful %>% filter(species == levels(as.factor(data_group$species))[i])
+}
+# Use for loop to calculate results
+for (k in 1 : n_rep_species) {
+  for (j in 1 : n_rep_permuted) {
+    # Re-order the activity
+    permuted_treatment <- data_species[[k]] %>% mutate(activity = activity[sample(row_number())])
+    # Do t-test
+    permuted_t_test_results <- t.test(permuted_treatment$activity[which(permuted_treatment$treatment == "control")], permuted_treatment$activity[which(permuted_treatment$treatment == "CO2")])
+    # Write the t-statistic into the vector
+    samp_dist[j] <- permuted_t_test_results$statistic
+  }
+  # Judge whether the t-statistic are extreme than original one
+  p_tibble <- tibble(value = samp_dist, extreme = (abs(samp_dist) > abs(t_statistic[k])))
+  # Calculate p-value
+  permuted_result[k] <- sum(p_tibble$extreme == T) / n_rep_permuted
+}
+# Show the results for each species in a table
+permuted_tibble <- tibble(species = levels(as.factor(data_useful$species)), p.p = permuted_result, p.t = t_result$p)
+flextable(permuted_tibble, cwidth = 2, cheight = 2) %>% add_header_lines(., values = "Table 3: p-value from permutation test") %>% add_footer_lines(., values = c("p.p, p-value from permutation test", "p.t, p-value from t-test")) 
 ```
 
 Below. Add a few sentences for the species (or multiple species) you talked about above to describe the permutation results:
 
 **Add your text and inline code chunks here**
+We can see the p-values from permutation test are similar with the p-values from t-test, in which only humbug and lemon species have significant difference between control and CO2 groups.
 
 # **Task 10**
 
