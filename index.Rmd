@@ -55,7 +55,7 @@ head(data_useful, 10)
 # Set time of loop
 n_rep <- length(levels(as.factor(data_useful$species)))
 # Set a list to store data
-data_species <- list(1, 2, 3, 4, 5, 6, 7, 8, 9)
+data_species <- list(1, 2, 3, 4, 5, 6)
 # Filter data by species
 for (i in 1 : n_rep) {
   data_species[[i]] <- data_useful %>% filter(species == levels(as.factor(data_useful$species))[i])
@@ -70,7 +70,7 @@ data_species
 
 ```{r}
 # Set a list to store plots
-list_plot <- list(1, 2, 3, 4, 5, 6, 7, 8, 9)
+list_plot <- list(1, 2, 3, 4, 5, 6)
 # Make the first plot
 pl <- ggplot(data_species[[1]], aes(x = treatment, y = activity, color = treatment)) +
   stat_summary(fun.y = mean, geom = "point", shape = 23, size=4) +

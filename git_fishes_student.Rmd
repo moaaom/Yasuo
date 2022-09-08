@@ -339,7 +339,7 @@ for (i in seq(1, n_rep, 2)) {
   data_sort[[i]] <- data_useful %>% filter(species == levels(as.factor(data_useful$species))[(i + 1) / 2] & treatment ==	"control")
   data_sort[[i + 1]] <- data_useful %>% filter(species == levels(as.factor(data_useful$species))[(i + 1) / 2] & treatment ==	"CO2")
   # Do t.test
-  tresult <- t.test(data_sort[[i]]$activity, data_sort[[i + 1]]$activity)
+  tresult <- t.test(data_sort[[i]]$activity, data_sort[[i + 1]]$activity, var.equal = T)
   # Write t_statistic into the vector
   t_statistic[(i + 1) / 2] <- tresult$statistic
   # Write results into the tibble
@@ -388,7 +388,7 @@ Re-analyse the data for a single species using permutations instead of a t-test.
 # Add a repeat time for each species
 n_rep_species <- length(levels(as.factor(data_group$species)))
 # Add a repeat time for permuted
-n_rep_permuted <- 100
+n_rep_permuted <- 1000
 # Add a list to store filtered data
 data_species <- list(1, 2, 3, 4, 5, 6)
 # Add a vector to store results for each species
@@ -406,7 +406,7 @@ for (k in 1 : n_rep_species) {
     # Re-order the activity
     permuted_treatment <- data_species[[k]] %>% mutate(activity = activity[sample(row_number())])
     # Do t-test
-    permuted_t_test_results <- t.test(permuted_treatment$activity[which(permuted_treatment$treatment == "control")], permuted_treatment$activity[which(permuted_treatment$treatment == "CO2")])
+    permuted_t_test_results <- t.test(permuted_treatment$activity[which(permuted_treatment$treatment == "control")], permuted_treatment$activity[which(permuted_treatment$treatment == "CO2")], var.eqal = T)
     # Write the t-statistic into the vector
     samp_dist[j] <- permuted_t_test_results$statistic
   }
@@ -424,7 +424,7 @@ Below. Add a few sentences for the species (or multiple species) you talked abou
 
 **Add your text and inline code chunks here**
 
-We can see the p-values from permutation test are similar with the p-values from t-test, which confirms the authenticity of each other. Only humbug and lemon species have significant difference between control and CO2 groups, which means CO2 can affect the activity of the two species.
+Because the variance of the data of the CO2 group and the control group are not much different, and both of them are approximately normal distribution, We can see the p-values from permutation test are similar with the p-values from t-test, which confirms the authenticity of each other. Only humbug species have significant difference between control and CO2 groups (p-value less than 0.05), which means CO2 can affect the activity of the species.
 
 # **Task 10**
 
